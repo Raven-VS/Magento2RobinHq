@@ -8,7 +8,7 @@
     "type": "magento2-module",
     "autoload": {
         "files": [
-            "registration.php"
+            "src/registration.php"
         ],
         "psr-4": {
             "Emico\\RobinHq\\": "src"
