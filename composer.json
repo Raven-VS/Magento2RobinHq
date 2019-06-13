@@ -4,7 +4,7 @@
     "require": {
         "php": "~7.2.0",
         "emico/robinhq-lib": "^1.0",
-        "zendframework/zend-diactoros": "^2.1"
+        "zendframework/zend-diactoros": "^1.8"
     },
     "type": "magento2-module",
     "autoload": {
