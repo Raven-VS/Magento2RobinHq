@@ -11,7 +11,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "Emico\\RobinHq\\": "src/Emico/RobinHq/"
+            "Emico\\RobinHq\\": "src"
         }
     }
 }
