@@ -72,7 +72,6 @@ class Config implements ConfigInterface
      */
     public function isApiEnabled(): bool
     {
-        return true;
         return (bool) $this->config->getValue('robinhq/api/server_enabled', ScopeInterface::SCOPE_STORE);
     }
 }
