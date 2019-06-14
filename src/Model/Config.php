@@ -32,7 +32,7 @@ class Config implements ConfigInterface
      */
     public function getApiKey(): string
     {
-        return $this->config->getValue('robinhq/api/key', ScopeInterface::SCOPE_STORE);
+        return (string) $this->config->getValue('robinhq/api/key', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -40,7 +40,7 @@ class Config implements ConfigInterface
      */
     public function getApiSecret(): string
     {
-        return $this->config->getValue('robinhq/api/secret', ScopeInterface::SCOPE_STORE);
+        return (string) $this->config->getValue('robinhq/api/secret', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -48,7 +48,7 @@ class Config implements ConfigInterface
      */
     public function getApiUri(): string
     {
-        return $this->config->getValue('robinhq/api/url', ScopeInterface::SCOPE_STORE);
+        return (string) $this->config->getValue('robinhq/api/url', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -56,7 +56,7 @@ class Config implements ConfigInterface
      */
     public function getApiServerKey(): string
     {
-        return $this->config->getValue('robinhq/api/server_key', ScopeInterface::SCOPE_STORE);
+        return (string) $this->config->getValue('robinhq/api/server_key', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -64,7 +64,7 @@ class Config implements ConfigInterface
      */
     public function getApiServerSecret(): string
     {
-        return $this->config->getValue('robinhq/api/server_secret', ScopeInterface::SCOPE_STORE);
+        return (string) $this->config->getValue('robinhq/api/server_secret', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -72,6 +72,7 @@ class Config implements ConfigInterface
      */
     public function isApiEnabled(): bool
     {
-        return $this->config->getValue('robinhq/api/server_enabled', ScopeInterface::SCOPE_STORE);
+        return true;
+        return (bool) $this->config->getValue('robinhq/api/server_enabled', ScopeInterface::SCOPE_STORE);
     }
 }

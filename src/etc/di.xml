@@ -9,4 +9,67 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Emico\RobinHqLib\Config\ConfigInterface" type="Emico\RobinHq\Model\Config" />
+
+    <!-- Mappers -->
+    <virtualType name="Emico\RobinHq\Mapper\DetailOrderFactory" type="Emico\RobinHq\Mapper\OrderFactory">
+        <arguments>
+            <argument name="detailViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\DefaultDetailViewProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Emico\RobinHq\Mapper\SimpleOrderFactory" type="Emico\RobinHq\Mapper\OrderFactory">
+        <arguments>
+            <argument name="detailViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\NullDetailViewProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Data providers -->
+    <type name="Emico\RobinHq\DataProvider\OrderDataProvider">
+        <arguments>
+            <argument name="orderFactory" xsi:type="object">Emico\RobinHq\Mapper\DetailOrderFactory</argument>
+        </arguments>
+    </type>
+
+    <type name="Emico\RobinHq\DataProvider\CustomerOrdersDataProvider">
+        <arguments>
+            <argument name="orderFactory" xsi:type="object">Emico\RobinHq\Mapper\SimpleOrderFactory</argument>
+        </arguments>
+    </type>
+
+    <preference for="Emico\RobinHq\DataProvider\DetailView\DetailViewProviderInterface" type="Emico\RobinHq\DataProvider\DetailView\DefaultDetailViewProvider" />
+
+    <virtualType name="Emico\RobinHq\DataProvider\DetailView\DefaultDetailViewProvider" type="Emico\RobinHq\DataProvider\DetailView\AggregateDetailViewProvider">
+        <arguments>
+            <argument name="providers" xsi:type="array">
+                <item name="details" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\OrderDetailViewProvider</item>
+                <item name="products" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\ProductDetailViewProvider</item>
+                <item name="totals" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\TotalDetailViewProvider</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- API endpoints -->
+    <type name="Emico\RobinHq\Controller\Api\Customer">
+        <arguments>
+            <argument name="dataProvider" xsi:type="object">Emico\RobinHq\DataProvider\CustomerDataProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Emico\RobinHq\Controller\Api\Order">
+        <arguments>
+            <argument name="dataProvider" xsi:type="object">Emico\RobinHq\DataProvider\OrderDataProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Emico\RobinHq\Controller\Api\CustomerOrders">
+        <arguments>
+            <argument name="dataProvider" xsi:type="object">Emico\RobinHq\DataProvider\CustomerOrdersDataProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Emico\RobinHq\Controller\Api\Search">
+        <arguments>
+            <argument name="dataProvider" xsi:type="object">Emico\RobinHq\DataProvider\SearchDataProvider</argument>
+        </arguments>
+    </type>
 </config>
