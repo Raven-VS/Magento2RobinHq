@@ -29,21 +29,16 @@ class CustomerFactory
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
-    /**
-     * @var CustomerPanelViewProviderInterface
-     */
-    private $panelViewProvider;
 
     /**
      * CustomerFactory constructor.
      * @param OrderRepositoryInterface $orderRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
-    public function __construct(OrderRepositoryInterface $orderRepository, SearchCriteriaBuilder $searchCriteriaBuilder, CustomerPanelViewProviderInterface $panelViewProvider)
+    public function __construct(OrderRepositoryInterface $orderRepository, SearchCriteriaBuilder $searchCriteriaBuilder)
     {
         $this->orderRepository = $orderRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->panelViewProvider = $panelViewProvider;
     }
 
     /**
