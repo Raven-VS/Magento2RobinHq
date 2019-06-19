@@ -72,4 +72,17 @@
             <argument name="dataProvider" xsi:type="object">Emico\RobinHq\DataProvider\SearchDataProvider</argument>
         </arguments>
     </type>
+
+    <!-- Source model -->
+    <virtualType name="Emico\RobinHq\Model\Config\Source\CustomerAttributes" type="Emico\RobinHq\Model\Config\Source\Attributes">
+        <arguments>
+            <argument name="entityType" xsi:type="string">customer</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Emico\RobinHq\Model\Config\Source\ProductAttributes" type="Emico\RobinHq\Model\Config\Source\Attributes">
+        <arguments>
+            <argument name="entityType" xsi:type="string">catalog_product</argument>
+        </arguments>
+    </virtualType>
 </config>

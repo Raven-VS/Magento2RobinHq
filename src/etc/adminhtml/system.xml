@@ -9,7 +9,13 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="robinhq">
+        <tab id="emico" translate="label" sortOrder="999999" class="emico-tab">
+            <label>Emico</label>
+        </tab>
+        <section id="robinhq" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>RobinHQ</label>
+            <tab>emico</tab>
+            <resource>Emico_RobinHq::config</resource>
             <group id="api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>API</label>
                 <field id="key" translate="label,comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -34,13 +40,28 @@
                 </field>
                 <field id="server_key" translate="label,comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API key</label>
-                    <comment>Provided by RobinHQ</comment>
+                    <depends>
+                        <field id="server_enabled">1</field>
+                    </depends>
                     <validate>required-entry validate-alphanum</validate>
                 </field>
                 <field id="server_secret" translate="label,comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API secret</label>
-                    <comment>Provided by RobinHQ</comment>
+                    <depends>
+                        <field id="server_enabled">1</field>
+                    </depends>
                     <validate>required-entry validate-alphanum</validate>
+                </field>
+            </group>
+            <group id="custom_attributes" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Custom Attributes</label>
+                <field id="customer_attributes" translate="Module" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Customer attributes</label>
+                    <source_model>Emico\RobinHq\Model\Config\Source\CustomerAttributes</source_model>
+                </field>
+                <field id="product_attributes" translate="Module" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product attributes</label>
+                    <source_model>Emico\RobinHq\Model\Config\Source\ProductAttributes</source_model>
                 </field>
             </group>
         </section>
