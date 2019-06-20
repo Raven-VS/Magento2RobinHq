@@ -12,7 +12,6 @@ use Emico\RobinHq\Model\Config as ModuleConfig;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\Data\Customer;
 use Magento\Eav\Model\Config as EavConfig;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
 

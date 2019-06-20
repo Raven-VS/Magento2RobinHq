@@ -59,6 +59,5 @@ class CustomerDataProvider implements DataProviderInterface
         }
         
         return $this->customerFactory->createRobinCustomer($customer, true);
-
     }
 }

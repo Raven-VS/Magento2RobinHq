@@ -22,7 +22,7 @@ The following endpoints are available:
  - /robinhq/api/order?orderNumber=`number`
  - /robinhq/api/customerOrders?email=`mail`
  - /robinhq/api/search?searchTerm=`search`
- - /robinhq/api/customerLifetime?email=`email`
+ - /robinhq/api/lifetime?email=`email`
    
 Those are accessible from the root of your magento domain. http://my.shop.nl/robinhq/api/customer
 
@@ -43,3 +43,54 @@ For example you have set up API key to `abc` and API secret to `def`.
 The value would be `base64(abc:def)`, which resolves to `YWJjOmRlZg==`.
 The full authorization header is:
 `Authorization: Basic YWJjOmRlZg==`
+
+#### Customize panelview and detailview
+
+Some endpoints provide the possibility to provide custom data in the Robin dashboards.
+
+For example when retrieving customer details using `/robinhq/api/customer` the following payload is returned.
+
+```
+{
+    "naam": "Robin Doe",
+    ...
+    "panel_view": {
+        "street": "Lovinklaan 1",
+        ...
+        "my_customfield1": "234",
+        "loyalty_card_number": "1265645456"
+    }
+}
+```
+
+You can simply add custom attributes to these views in the configuration.
+`Stores` -> `Configuration` -> `Emico` -> `RobinHQ` -> `Custom Attributes` section.
+
+When you need even more control or implement your own bussiness logic you can implement the interfaces `DetailViewProviderInterface` or `CustomerPanelViewProviderInterface`.
+
+For example:
+```
+namespace MyVendor\MyModule;
+
+class MyPanelViewProvider implements CustomerPanelViewProviderInterface
+{
+    public function getData(CustomerInterface $customer): array
+    {
+        return [
+            'my_custom_field' => 'some value'
+        ]
+    }
+}
+```
+
+Register in your `di.xml`
+
+```
+<virtualType name="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" type="Emico\RobinHq\DataProvider\PanelView\AggregateProvider">
+    <arguments>
+        <argument name="providers" xsi:type="array">
+            <item name="mydata" xsi:type="object">MyVendor\MyModule\MyPanelViewProvider</item>
+        </argument>
+    </arguments>
+</virtualType>
+```

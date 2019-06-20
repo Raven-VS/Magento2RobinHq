@@ -4,6 +4,7 @@ namespace Emico\RobinHq\Mapper;
 
 use DateTimeImmutable;
 use Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProviderInterface;
+use Emico\RobinHq\Service\CustomerService;
 use Emico\RobinHqLib\Model\Customer;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
@@ -34,6 +35,11 @@ class CustomerFactory
     private $panelViewProvider;
 
     /**
+     * @var CustomerService
+     */
+    private $customerService;
+
+    /**
      * CustomerFactory constructor.
      * @param OrderRepositoryInterface $orderRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
@@ -42,11 +48,13 @@ class CustomerFactory
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        CustomerPanelViewProviderInterface $panelViewProvider
+        CustomerPanelViewProviderInterface $panelViewProvider,
+        CustomerService $customerService
     ) {
         $this->orderRepository = $orderRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->panelViewProvider = $panelViewProvider;
+        $this->customerService = $customerService;
     }
 
     /**
@@ -94,7 +102,7 @@ class CustomerFactory
     {
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter(OrderInterface::CUSTOMER_ID, $customer->getId())
-            //->addFilter(OrderInterface::STATE, [Order::STATE_COMPLETE, Order::STATE_PROCESSING], 'in')
+            ->addFilter(OrderInterface::STATE, [Order::STATE_COMPLETE, Order::STATE_PROCESSING], 'in')
             ->create();
 
         $customerOrders = $this->orderRepository->getList($searchCriteria)->getItems();
@@ -126,61 +134,11 @@ class CustomerFactory
         Customer $robinCustomer,
         bool $includePanelView
     ): void {
-        $address = $this->getDefaultAddress($customer);
+        $address = $this->customerService->getDefaultAddress($customer);
         if ($address === null) {
             return;
         }
 
         $robinCustomer->setPhoneNumber($address->getTelephone());
-
-        if ($includePanelView) {
-            $street = $address->getStreet();
-            if (\is_array($street)) {
-                $street = implode("\n", $street);
-            }
-
-            $robinCustomer->addPanelViewItem('street', $street);
-            $robinCustomer->addPanelViewItem('postalCode', $address->getPostcode());
-            $robinCustomer->addPanelViewItem('city', $address->getCity());
-            $robinCustomer->addPanelViewItem('telephone', $address->getTelephone());
-        }
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     * @return AddressInterface|null
-     */
-    protected function getDefaultAddress(CustomerInterface $customer): ?AddressInterface
-    {
-        $customerAddresses = $customer->getAddresses();
-        if (count($customerAddresses) === 0) {
-            return null;
-        }
-
-        $defaultAddress = null;
-        foreach ($customerAddresses as $address) {
-            if ($address->isDefaultBilling()) {
-                $defaultAddress = $address;
-            }
-            if ($defaultAddress === null && $address->isDefaultShipping()) {
-                $defaultAddress = $address;
-            }
-        }
-
-        return $defaultAddress ?? $customerAddresses[0];
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     * @return AddressInterface|null
-     */
-    protected function getShippingAddress(CustomerInterface $customer): ?AbstractAddress
-    {
-        foreach ($customer->getAddresses() as $address) {
-            if ($address->isDefaultShipping()) {
-                return $address;
-            }
-        }
-        return null;
     }
 }

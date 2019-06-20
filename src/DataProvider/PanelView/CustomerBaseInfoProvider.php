@@ -4,10 +4,8 @@
  * @copyright (c) Emico B.V. 2017
  */
 
-namespace Emico\RobinHq\DataProvider\DetailView;
+namespace Emico\RobinHq\DataProvider\PanelView;
 
-
-use Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProviderInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 
 class CustomerBaseInfoProvider implements CustomerPanelViewProviderInterface
