@@ -74,4 +74,28 @@ class Config implements ConfigInterface
     {
         return (bool) $this->config->getValue('robinhq/api/server_enabled', ScopeInterface::SCOPE_STORE);
     }
+
+    /**
+     * @return array
+     */
+    public function getCustomerAttributes(): array
+    {
+        return explode(',', $this->config->getValue('robinhq/custom_attributes/customer_attributes', ScopeInterface::SCOPE_STORE));
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductAttributes(): array
+    {
+        return explode(',', $this->config->getValue('robinhq/custom_attributes/product_attributes', ScopeInterface::SCOPE_STORE));
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderAttributes(): array
+    {
+        return explode(',', $this->config->getValue('robinhq/custom_attributes/order_attributes', ScopeInterface::SCOPE_STORE));
+    }
 }

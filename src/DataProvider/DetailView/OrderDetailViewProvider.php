@@ -8,7 +8,9 @@ namespace Emico\RobinHq\DataProvider\DetailView;
 
 
 use Emico\RobinHqLib\Model\Order\DetailsView;
+use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 
 class OrderDetailViewProvider implements DetailViewProviderInterface
 {
@@ -19,19 +21,30 @@ class OrderDetailViewProvider implements DetailViewProviderInterface
      */
     public function getItems(OrderInterface $order): array
     {
+        /** @var Order $order */
         $data = [
-            'Ordernumber' => $order->getIncrementId(),
-            'Store' => "PME Legend EN", //@todo
-            'Orderdate' => (new \DateTimeImmutable($order->getCreatedAt()))->format('d-m-Y'),
-            'Status' => $order->getStatus(),
-            'Payment method' => $order->getPayment() ? $order->getPayment()->getMethod() : 'Unknown',
-            // @todo implement Custom fields
-            "sherpa_odernummer" => "80320000",
-            'Invoicedate' => '02-01-2018', // @todo hoe invoice date ophalen?
+            //@todo translate labels
+            'ordernumber' => $order->getIncrementId(),
+            'store' => $order->getStore()->getCode(),
+            'orderdate' => (new \DateTimeImmutable($order->getCreatedAt()))->format('d-m-Y'),
+            'status' => $order->getStatus(),
+            'payment method' => $order->getPayment() ? $order->getPayment()->getMethod() : 'Unknown',
+
+
+            // @todo custom attributes
+            //"sherpa_odernummer" => "80320000",
         ];
 
+        if ($order instanceof Order) {
+            /** @var InvoiceInterface $lastInvoice */
+            $lastInvoice = $order->getInvoiceCollection()->getLastItem();
+            if ($lastInvoice->getEntityId()) {
+                $data['invoicedate'] = (new \DateTimeImmutable($lastInvoice->getCreatedAt()))->format('d-m-Y');
+            }
+        }
+
         $detailView = new DetailsView(DetailsView::DISPLAY_MODE_ROWS, $data);
-        $detailView->setCaption('details'); //@todo translation
+        $detailView->setCaption(__('details'));
         return [$detailView];
     }
 }

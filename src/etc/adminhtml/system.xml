@@ -63,6 +63,10 @@
                     <label>Product attributes</label>
                     <source_model>Emico\RobinHq\Model\Config\Source\ProductAttributes</source_model>
                 </field>
+                <field id="order_attributes" translate="Module" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order attributes</label>
+                    <source_model>Emico\RobinHq\Model\Config\Source\OrderAttributes</source_model>
+                </field>
             </group>
         </section>
     </system>

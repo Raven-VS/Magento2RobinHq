@@ -48,6 +48,16 @@
         </arguments>
     </virtualType>
 
+    <preference for="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProviderInterface" type="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" />
+
+    <virtualType name="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" type="Emico\RobinHq\DataProvider\PanelView\AggregateProvider">
+        <arguments>
+            <argument name="providers" xsi:type="array">
+                <item name="custom_attributes" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\CustomAttributesProvider</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <!-- API endpoints -->
     <type name="Emico\RobinHq\Controller\Api\Customer">
         <arguments>
@@ -83,6 +93,12 @@
     <virtualType name="Emico\RobinHq\Model\Config\Source\ProductAttributes" type="Emico\RobinHq\Model\Config\Source\Attributes">
         <arguments>
             <argument name="entityType" xsi:type="string">catalog_product</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Emico\RobinHq\Model\Config\Source\OrderAttributes" type="Emico\RobinHq\Model\Config\Source\Attributes">
+        <arguments>
+            <argument name="entityType" xsi:type="string">order</argument>
         </arguments>
     </virtualType>
 </config>
