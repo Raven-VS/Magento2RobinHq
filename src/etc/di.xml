@@ -42,6 +42,13 @@
         </arguments>
     </type>
 
+    <type name="Emico\RobinHq\DataProvider\SearchDataProvider">
+        <arguments>
+            <argument name="customerFactory" xsi:type="object">Emico\RobinHq\Mapper\SimpleCustomerFactory</argument>
+            <argument name="orderFactory" xsi:type="object">Emico\RobinHq\Mapper\SimpleOrderFactory</argument>
+        </arguments>
+    </type>
+
     <virtualType name="Emico\RobinHq\DataProvider\CustomerLifetimeDataProvider" type="Emico\RobinHq\DataProvider\CustomerDataProvider">
         <arguments>
             <argument name="customerFactory" xsi:type="object">Emico\RobinHq\Mapper\SimpleCustomerFactory</argument>
