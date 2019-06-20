@@ -128,4 +128,12 @@
             <argument name="queue" xsi:type="object">Emico\RobinHq\Queue\EventPublisher</argument>
         </arguments>
     </type>
+
+    <type name="Emico\RobinHqLib\Service\EventProcessingService">
+        <arguments>
+            <argument name="eventProcessors" xsi:type="array">
+                <item name="customer" xsi:type="object">Emico\RobinHqLib\EventProcessor\CustomerEventProcessor</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

@@ -1,60 +1,40 @@
 <?php
-/**
- * Tweakwise & Emico (https://www.tweakwise.com/ & https://www.emico.nl/) - All Rights Reserved
- *
- * @copyright Copyright (c) 2017-%year% Tweakwise.com B.V. (https://www.tweakwise.com)
- * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
 
-namespace Emico\TweakwisePim\Queue\Consumer;
+namespace Emico\RobinHq\Queue;
 
-use Emico\TweakwisePim\EntityUpdateService;
-use Emico\TweakwisePim\Queue\Message\UpdateMessage;
-use Magento\Framework\Exception\LocalizedException;
+use Emico\RobinHqLib\Service\EventProcessingService;
 use Psr\Log\LoggerInterface;
 
 class EventConsumer
 {
-    /**
-     * @var EntityUpdateService
-     */
-    private $updateService;
-
     /**
      * @var LoggerInterface
      */
     private $log;
 
     /**
+     * @var EventProcessingService
+     */
+    private $eventProcessingService;
+
+    /**
      * UpdateConsumer constructor.
      *
-     * @param EntityUpdateService $updateService
+     * @param EventProcessingService $eventProcessingService
+     * @param LoggerInterface $log
      */
-    public function __construct(EntityUpdateService $updateService, LoggerInterface $log)
+    public function __construct(EventProcessingService $eventProcessingService, LoggerInterface $log)
     {
-        $this->updateService = $updateService;
         $this->log = $log;
+        $this->eventProcessingService = $eventProcessingService;
     }
 
     /**
-     * @param UpdateMessage $message
-     * @throws LocalizedException
+     * @param string $message
      */
-    public function processMessage(UpdateMessage $message): void
+    public function processMessage(string $message): void
     {
-        $this->log->debug(
-            sprintf(
-                'Handle update message %s %s (%s)',
-                $message->getOperation(),
-                $message->getEntityName(),
-                $message->getEntityId()
-            ),
-            [
-                'operation' => $message->getOperation(),
-                'entityType' => $message->getEntityName(),
-                'entityId' => $message->getEntityId(),
-            ]
-        );
-        $this->updateService->updateById($message->getEntityName(), $message->getEntityId(), $message->isForce());
+        $this->log->debug(sprintf('Handle message (%s)', $message));
+        $this->eventProcessingService->processEvent($message);
     }
 }
