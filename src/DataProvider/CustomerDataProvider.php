@@ -58,6 +58,6 @@ class CustomerDataProvider implements DataProviderInterface
             throw new DataNotFoundException(sprintf('Could not find customer defined by email %s.', $email));
         }
         
-        return $this->customerFactory->createRobinCustomer($customer, true);
+        return $this->customerFactory->createRobinCustomer($customer);
     }
 }

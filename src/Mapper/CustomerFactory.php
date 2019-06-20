@@ -59,22 +59,24 @@ class CustomerFactory
 
     /**
      * @param CustomerInterface $customer
-     * @param bool $includePanelView
      * @return Customer
      * @throws \Exception
      */
-    public function createRobinCustomer(CustomerInterface $customer, bool $includePanelView = false): Customer
+    public function createRobinCustomer(CustomerInterface $customer): Customer
     {
         $robinCustomer = new Customer($customer->getEmail());
         $robinCustomer->setCustomerSince(new DateTimeImmutable($customer->getCreatedAt()));
         $robinCustomer->setName($this->getFullName($customer));
 
         foreach ($this->panelViewProvider->getData($customer) as $label => $value) {
-            //@todo translate label
-            $robinCustomer->addPanelViewItem($label, $value);
+            $robinCustomer->addPanelViewItem(__($label), $value);
         }
 
-        $this->addAddressInformation($customer, $robinCustomer, $includePanelView);
+        $address = $this->customerService->getDefaultAddress($customer);
+        if ($address !== null) {
+            $robinCustomer->setPhoneNumber($address->getTelephone());
+        }
+
         $this->addOrderInformation($customer, $robinCustomer);
 
         return $robinCustomer;
@@ -122,23 +124,5 @@ class CustomerFactory
             $totalSpent += $order->getGrandTotal();
         }
         $robinCustomer->setTotalRevenue($totalSpent);
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     * @param Customer $robinCustomer
-     * @param bool $includePanelView
-     */
-    protected function addAddressInformation(
-        CustomerInterface $customer,
-        Customer $robinCustomer,
-        bool $includePanelView
-    ): void {
-        $address = $this->customerService->getDefaultAddress($customer);
-        if ($address === null) {
-            return;
-        }
-
-        $robinCustomer->setPhoneNumber($address->getTelephone());
     }
 }
