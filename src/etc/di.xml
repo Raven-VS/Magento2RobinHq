@@ -11,13 +11,20 @@
 
     <virtualType name="Emico\RobinHq\Mapper\SimpleOrderFactory" type="Emico\RobinHq\Mapper\OrderFactory">
         <arguments>
-            <argument name="detailViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\NullDetailViewProvider</argument>
+            <argument name="detailViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\NullProvider</argument>
         </arguments>
     </virtualType>
 
     <virtualType name="Emico\RobinHq\Mapper\SimpleCustomerFactory" type="Emico\RobinHq\Mapper\CustomerFactory">
         <arguments>
-            <argument name="panelViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\NullProvider</argument>
+            <argument name="panelViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\Customer\NullProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Emico\RobinHq\Mapper\CustomerOrdersOrderFactory" type="Emico\RobinHq\Mapper\OrderFactory">
+        <arguments>
+            <argument name="detailViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\NullProvider</argument>
+            <argument name="listViewProvider" xsi:type="object">Emico\RobinHq\DataProvider\ListView\Order\CustomerOrdersListViewProvider</argument>
         </arguments>
     </virtualType>
 
@@ -30,7 +37,7 @@
 
     <type name="Emico\RobinHq\DataProvider\CustomerOrdersDataProvider">
         <arguments>
-            <argument name="orderFactory" xsi:type="object">Emico\RobinHq\Mapper\SimpleOrderFactory</argument>
+            <argument name="orderFactory" xsi:type="object">Emico\RobinHq\Mapper\CustomerOrdersOrderFactory</argument>
         </arguments>
     </type>
 
@@ -50,7 +57,7 @@
     <!-- Detail view providers -->
     <preference for="Emico\RobinHq\DataProvider\DetailView\DetailViewProviderInterface" type="Emico\RobinHq\DataProvider\DetailView\DefaultDetailViewProvider" />
 
-    <virtualType name="Emico\RobinHq\DataProvider\DetailView\DefaultDetailViewProvider" type="Emico\RobinHq\DataProvider\DetailView\AggregateDetailViewProvider">
+    <virtualType name="Emico\RobinHq\DataProvider\DetailView\DefaultDetailViewProvider" type="Emico\RobinHq\DataProvider\DetailView\AggregateProvider">
         <arguments>
             <argument name="providers" xsi:type="array">
                 <item name="details" xsi:type="object">Emico\RobinHq\DataProvider\DetailView\OrderDetailViewProvider</item>
@@ -61,17 +68,22 @@
     </virtualType>
 
     <!-- Panel view provider -->
-    <preference for="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProviderInterface" type="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" />
+    <preference for="Emico\RobinHq\DataProvider\PanelView\Customer\PanelViewProviderInterface" type="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" />
 
-    <virtualType name="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" type="Emico\RobinHq\DataProvider\PanelView\AggregateProvider">
+    <virtualType name="Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProvider" type="Emico\RobinHq\DataProvider\PanelView\Customer\AggregateProvider">
         <arguments>
             <argument name="providers" xsi:type="array">
-                <item name="base" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\CustomerBaseInfoProvider</item>
-                <item name="shipping_address" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\ShippingAddressProvider</item>
-                <item name="custom_attributes" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\CustomAttributesProvider</item>
+                <item name="base" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\Customer\BaseInfoProvider</item>
+                <item name="shipping_address" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\Customer\ShippingAddressProvider</item>
+                <item name="custom_attributes" xsi:type="object">Emico\RobinHq\DataProvider\PanelView\Customer\CustomAttributesProvider</item>
             </argument>
         </arguments>
     </virtualType>
+
+    <!-- List view provider -->
+    <preference for="Emico\RobinHq\DataProvider\ListView\Order\ListViewProviderInterface" type="Emico\RobinHq\DataProvider\ListView\Order\NullProvider" />
+
+    <virtualType name="Emico\RobinHq\DataProvider\ListView\Order\CustomerOrdersListViewProvider" type="Emico\RobinHq\DataProvider\ListView\Order\BaseDataProvider" />
 
     <!-- API endpoints -->
     <type name="Emico\RobinHq\Controller\Api\Customer">

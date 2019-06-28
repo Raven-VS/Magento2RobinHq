@@ -4,7 +4,7 @@
  * @copyright (c) Emico B.V. 2017
  */
 
-namespace Emico\RobinHq\DataProvider\PanelView;
+namespace Emico\RobinHq\DataProvider\PanelView\Customer;
 
 
 use Emico\RobinHq\Model\Config as ModuleConfig;
@@ -15,7 +15,7 @@ use Magento\Eav\Model\Config as EavConfig;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
 
-class CustomAttributesProvider implements CustomerPanelViewProviderInterface
+class CustomAttributesProvider implements PanelViewProviderInterface
 {
     /**
      * @var ModuleConfig

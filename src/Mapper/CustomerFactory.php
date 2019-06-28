@@ -3,12 +3,10 @@
 namespace Emico\RobinHq\Mapper;
 
 use DateTimeImmutable;
-use Emico\RobinHq\DataProvider\PanelView\CustomerPanelViewProviderInterface;
+use Emico\RobinHq\DataProvider\PanelView\Customer\PanelViewProviderInterface;
 use Emico\RobinHq\Service\CustomerService;
 use Emico\RobinHqLib\Model\Customer;
-use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Address\AbstractAddress;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -30,7 +28,7 @@ class CustomerFactory
      */
     private $searchCriteriaBuilder;
     /**
-     * @var CustomerPanelViewProviderInterface
+     * @var PanelViewProviderInterface
      */
     private $panelViewProvider;
 
@@ -43,12 +41,12 @@ class CustomerFactory
      * CustomerFactory constructor.
      * @param OrderRepositoryInterface $orderRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param CustomerPanelViewProviderInterface $panelViewProvider
+     * @param PanelViewProviderInterface $panelViewProvider
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        CustomerPanelViewProviderInterface $panelViewProvider,
+        PanelViewProviderInterface $panelViewProvider,
         CustomerService $customerService
     ) {
         $this->orderRepository = $orderRepository;

@@ -3,6 +3,7 @@
 namespace Emico\RobinHq\Mapper;
 
 use Emico\RobinHq\DataProvider\DetailView\DetailViewProviderInterface;
+use Emico\RobinHq\DataProvider\ListView\Order\ListViewProviderInterface;
 use Emico\RobinHqLib\Model\Order;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
@@ -35,6 +36,10 @@ class OrderFactory
      * @var DetailViewProviderInterface
      */
     private $detailViewProvider;
+    /**
+     * @var ListViewProviderInterface
+     */
+    private $listViewProvider;
 
     /**
      * OrderFactory constructor.
@@ -42,17 +47,20 @@ class OrderFactory
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param SortOrderBuilder $sortOrderBuilder
      * @param DetailViewProviderInterface $detailViewProvider
+     * @param ListViewProviderInterface $listViewProvider
      */
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SortOrderBuilder $sortOrderBuilder,
-        DetailViewProviderInterface $detailViewProvider
+        DetailViewProviderInterface $detailViewProvider,
+        ListViewProviderInterface $listViewProvider
     ) {
         $this->orderRepository = $orderRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->sortOrderBuilder = $sortOrderBuilder;
         $this->detailViewProvider = $detailViewProvider;
+        $this->listViewProvider = $listViewProvider;
     }
 
     /**
@@ -72,6 +80,10 @@ class OrderFactory
 
         foreach ($this->detailViewProvider->getItems($order) as $item) {
             $robinOrder->addDetailsView($item);
+        }
+
+        foreach ($this->listViewProvider->getData($order) as $key => $value) {
+            $robinOrder->addListViewItem($key, $value);
         }
 
         return $robinOrder;

@@ -36,6 +36,7 @@ class CustomerOrdersDataProvider implements DataProviderInterface
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
+
     /**
      * @var SortOrderBuilder
      */

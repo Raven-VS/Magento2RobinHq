@@ -4,13 +4,13 @@
  * @copyright (c) Emico B.V. 2017
  */
 
-namespace Emico\RobinHq\DataProvider\PanelView;
+namespace Emico\RobinHq\DataProvider\PanelView\Customer;
 
 
 use Emico\RobinHq\Service\CustomerService;
 use Magento\Customer\Api\Data\CustomerInterface;
 
-class ShippingAddressProvider implements CustomerPanelViewProviderInterface
+class ShippingAddressProvider implements PanelViewProviderInterface
 {
     /**
      * @var CustomerService

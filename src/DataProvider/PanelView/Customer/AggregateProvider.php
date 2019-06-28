@@ -4,15 +4,15 @@
  * @copyright (c) Emico B.V. 2017
  */
 
-namespace Emico\RobinHq\DataProvider\DetailView;
+namespace Emico\RobinHq\DataProvider\PanelView\Customer;
 
 
-use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 
-class AggregateDetailViewProvider implements DetailViewProviderInterface
+class AggregateProvider implements PanelViewProviderInterface
 {
     /**
-     * @var array|DetailViewProviderInterface[]
+     * @var array|CustomerPanelViewProviderInterface[]
      */
     private $providers;
 
@@ -26,14 +26,14 @@ class AggregateDetailViewProvider implements DetailViewProviderInterface
     }
 
     /**
-     * @param OrderInterface $order
+     * @param CustomerInterface $customer
      * @return array
      */
-    public function getItems(OrderInterface $order): array
+    public function getData(CustomerInterface $customer): array
     {
         $providerItems = [];
         foreach ($this->providers as $provider) {
-            $providerItems[] = $provider->getItems($order);
+            $providerItems[] = $provider->getData($customer);
         }
         return array_merge(...$providerItems);
     }

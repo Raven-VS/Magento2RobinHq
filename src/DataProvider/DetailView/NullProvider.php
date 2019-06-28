@@ -10,7 +10,7 @@ namespace Emico\RobinHq\DataProvider\DetailView;
 use Emico\RobinHqLib\Model\Order\DetailsView;
 use Magento\Sales\Api\Data\OrderInterface;
 
-class NullDetailViewProvider implements DetailViewProviderInterface
+class NullProvider implements DetailViewProviderInterface
 {
     /**
      * @param OrderInterface $order
