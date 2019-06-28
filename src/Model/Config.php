@@ -76,6 +76,14 @@ class Config implements ConfigInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isPostApiEnabled(): bool
+    {
+        return (bool) $this->config->getValue('robinhq/api/post_enabled', ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
      * @return array
      */
     public function getCustomerAttributes(): array

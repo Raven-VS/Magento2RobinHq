@@ -20,19 +20,12 @@ class EventPublisher implements QueueInterface
     private $publisher;
 
     /**
-     * @var LoggerInterface
-     */
-    private $log;
-
-    /**
      * ItemPublisher constructor.
      * @param PublisherInterface $publisher
-     * @param LoggerInterface    $log
      */
-    public function __construct(PublisherInterface $publisher, LoggerInterface $log)
+    public function __construct(PublisherInterface $publisher)
     {
         $this->publisher = $publisher;
-        $this->log = $log;
     }
 
     /**
@@ -42,5 +35,6 @@ class EventPublisher implements QueueInterface
     public function pushEvent(string $event): bool
     {
         $this->publisher->publish(self::TOPIC_NAME, $event);
+        return true;
     }
 }

@@ -9,24 +9,38 @@
             <tab>emico</tab>
             <resource>Emico_RobinHq::config</resource>
             <group id="api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>API</label>
+                <label>Dynamic API</label>
+                <field id="post_enabled" translate="label,comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable customer/order POST</label>
+                    <comment>When you enable this POST requests will be issued to RobinHQ when an order changes state</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="key" translate="label,comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API key</label>
-                    <comment>Provided by RobinHQ</comment>
+                    <depends>
+                        <field id="post_enabled">1</field>
+                    </depends>
+                    <comment>key for the POST API. Provided by RobinHQ</comment>
                     <validate>required-entry validate-alphanum</validate>
                 </field>
                 <field id="secret" translate="label,comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API secret</label>
-                    <comment>Provided by RobinHQ</comment>
+                    <depends>
+                        <field id="post_enabled">1</field>
+                    </depends>
+                    <comment>secret for the POST API. Provided by RobinHQ</comment>
                     <validate>required-entry validate-alphanum</validate>
                 </field>
                 <field id="url" translate="label,comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API URL</label>
-                    <comment>Provided by RobinHQ</comment>
+                    <depends>
+                        <field id="post_enabled">1</field>
+                    </depends>
+                    <comment>url for the POST API</comment>
                     <validate>required-entry validate-alphanum</validate>
                 </field>
                 <field id="server_enabled" translate="label,comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable dynamic API</label>
+                    <label>Enable dynamic API endpoints</label>
                     <comment>When you enable this the dynamic API will be accessible by RobinHQ dashboard</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>

@@ -94,3 +94,9 @@ Register in your `di.xml`
     </arguments>
 </virtualType>
 ```
+
+## Dynamic API POST requests
+
+For complete integration with Robin dynamic API the Magento module needs to issue POST requests to the RobinHQ platform.
+
+For this functionality to work correctly it is mandatory to have a working RabbitMQ instance. You can read more about setting this up in the [Magento documentation](https://devdocs.magento.com/guides/v2.3/install-gde/prereq/install-rabbitmq.html).

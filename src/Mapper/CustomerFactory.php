@@ -121,8 +121,9 @@ class CustomerFactory
 
         $totalSpent = 0;
         foreach ($customerOrders as $order) {
-            $totalSpent += $order->getGrandTotal();
+            $totalSpent += $order->getGrandTotal() - $order->getTotalRefunded();
         }
+
         $robinCustomer->setTotalRevenue($totalSpent);
     }
 }
