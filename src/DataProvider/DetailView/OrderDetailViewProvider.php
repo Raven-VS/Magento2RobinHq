@@ -7,6 +7,7 @@
 namespace Emico\RobinHq\DataProvider\DetailView;
 
 
+use DateTimeImmutable;
 use Emico\RobinHqLib\Model\Order\DetailsView;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -23,12 +24,11 @@ class OrderDetailViewProvider implements DetailViewProviderInterface
     {
         /** @var Order $order */
         $data = [
-            //@todo translate labels
-            'ordernumber' => $order->getIncrementId(),
-            'store' => $order->getStore()->getCode(),
-            'orderdate' => (new \DateTimeImmutable($order->getCreatedAt()))->format('d-m-Y'),
-            'status' => $order->getStatus(),
-            'payment method' => $order->getPayment() ? $order->getPayment()->getMethod() : 'Unknown',
+            __('ordernumber')->render() => $order->getIncrementId(),
+            __('store')->render() => $order->getStore()->getCode(),
+            __('orderdate')->render() => (new DateTimeImmutable($order->getCreatedAt()))->format('d-m-Y'),
+            __('status')->render() => $order->getStatus(),
+            __('payment method')->render() => $order->getPayment() ? $order->getPayment()->getMethod() : 'Unknown',
 
 
             // @todo custom attributes
@@ -39,7 +39,7 @@ class OrderDetailViewProvider implements DetailViewProviderInterface
             /** @var InvoiceInterface $lastInvoice */
             $lastInvoice = $order->getInvoiceCollection()->getLastItem();
             if ($lastInvoice->getEntityId()) {
-                $data['invoicedate'] = (new \DateTimeImmutable($lastInvoice->getCreatedAt()))->format('d-m-Y');
+                $data['invoicedate'] = (new DateTimeImmutable($lastInvoice->getCreatedAt()))->format('d-m-Y');
             }
         }
 

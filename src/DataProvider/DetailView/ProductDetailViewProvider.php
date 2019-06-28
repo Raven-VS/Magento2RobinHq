@@ -7,9 +7,19 @@
 namespace Emico\RobinHq\DataProvider\DetailView;
 
 
+use Emico\RobinHq\Model\Config;
 use Emico\RobinHqLib\Model\Order\DetailsView;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product;
+use Magento\Eav\Model\Config as EavConfig;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderItemInterface;
+use Magento\Sales\Model\Order\Item;
+use Psr\Log\LoggerInterface;
 
 class ProductDetailViewProvider implements DetailViewProviderInterface
 {
@@ -19,12 +29,58 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
     private $priceCurrency;
 
     /**
+     * @var Config
+     */
+    private $moduleConfig;
+
+    /**
+     * @var array
+     */
+    private $products;
+
+    /**
+     * @var ProductRepositoryInterface
+     */
+    private $productRepository;
+
+    /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
+     * @var EavConfig
+     */
+    private $eavConfig;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * ProductDetailViewProvider constructor.
      * @param PriceCurrencyInterface $priceCurrency
+     * @param ProductRepositoryInterface $productRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param EavConfig $eavConfig
+     * @param Config $moduleConfig
+     * @param LoggerInterface $logger
      */
-    public function __construct(PriceCurrencyInterface $priceCurrency)
-    {
+    public function __construct(
+        PriceCurrencyInterface $priceCurrency,
+        ProductRepositoryInterface $productRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        EavConfig $eavConfig,
+        Config $moduleConfig,
+        LoggerInterface $logger
+    ) {
         $this->priceCurrency = $priceCurrency;
+        $this->moduleConfig = $moduleConfig;
+        $this->productRepository = $productRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->eavConfig = $eavConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -35,22 +91,79 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
     {
         $orderItemsData = [];
         foreach ($order->getItems() as $item) {
-            // @todo translation of array keys
-            $orderItemsData[] = [
-                'artikelnr_(SKU)' => $item->getSku(),
-                'article name' => $item->getName(),
-                'quantity' => $item->getQtyOrdered(),
-
-                // @todo custom attributes
-                'merk' => 'PME Legend',
-				'maat' => 'W:34 L:18',
-
-                'price' => $this->priceCurrency->format($item->getPriceInclTax(), false),
-                'totalIncludingTax' => $this->priceCurrency->format($item->getRowTotalInclTax(), false)
+            $itemData = [
+                __('artikelnr_(SKU)')->render() => $item->getSku(),
+                __('article name')->render() => $item->getName(),
+                __('quantity')->render() => $item->getQtyOrdered(),
+                __('price')->render() => $this->priceCurrency->format($item->getPriceInclTax(), false),
+                __('totalIncludingTax')->render() => $this->priceCurrency->format($item->getRowTotalInclTax(), false)
             ];
+
+            // Add custom configured product attributes
+            if ($item instanceof Item) {
+                $product = $item->getProduct();
+                if ($product) {
+                    $itemData = array_merge($itemData, $this->getCustomProductAttributes($product));
+                }
+            }
+            $orderItemsData[] = $itemData;
         }
         $detailView = new DetailsView(DetailsView::DISPLAY_MODE_COLUMNS, $orderItemsData);
         $detailView->setCaption(__('products'));
         return [$detailView];
+    }
+
+    /**
+     * @param OrderInterface $order
+     * @param OrderItemInterface $orderItem
+     * @return ProductInterface|null
+     */
+    protected function getProductFromOrderItem(OrderInterface $order, OrderItemInterface $orderItem): ?ProductInterface
+    {
+        if ($this->products === null) {
+            $productIds = array_map(
+                function (OrderItemInterface $item) {
+                    return $item->getProductId();
+                },
+                $order->getItems()
+            );
+            $productIds = array_unique($productIds);
+
+            $searchCriteria = $this->searchCriteriaBuilder
+                ->addFilter('entity_id', $productIds, 'in')
+                ->create();
+
+            $products = $this->productRepository->getList($searchCriteria)->getItems();
+            foreach ($products as $product) {
+                $this->products[$product->getId()] = $product;
+            }
+        }
+
+        return $this->products[$orderItem->getProductId()] ?? null;
+    }
+
+    /**
+     * @param ProductInterface $product
+     * @return array
+     */
+    protected function getCustomProductAttributes(ProductInterface $product): array
+    {
+        $attributeCodes = $this->moduleConfig->getProductAttributes();
+        if (!$product instanceof Product) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($attributeCodes as $code) {
+            try {
+                $attributeConfig = $this->eavConfig->getAttribute(Product::ENTITY, $code);
+            } catch (LocalizedException $e) {
+                $this->logger->error($e->getMessage());
+                continue;
+            }
+
+            $result[$attributeConfig->getDefaultFrontendLabel()] = $product->getAttributeText($code);
+        }
+        return $result;
     }
 }
