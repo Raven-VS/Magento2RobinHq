@@ -8,6 +8,8 @@ namespace Emico\RobinHq\DataProvider\DetailView;
 
 
 use DateTimeImmutable;
+use Emico\RobinHq\DataProvider\EavAttribute\AttributeRetriever;
+use Emico\RobinHq\Model\Config;
 use Emico\RobinHqLib\Model\Order\DetailsView;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -15,6 +17,26 @@ use Magento\Sales\Model\Order;
 
 class OrderDetailViewProvider implements DetailViewProviderInterface
 {
+    /**
+     * @var AttributeRetriever
+     */
+    private $attributeRetriever;
+    /**
+     * @var Config
+     */
+    private $moduleConfig;
+
+    /**
+     * OrderDetailViewProvider constructor.
+     * @param Config $moduleConfig
+     * @param AttributeRetriever $attributeRetriever
+     */
+    public function __construct(Config $moduleConfig, AttributeRetriever $attributeRetriever)
+    {
+        $this->attributeRetriever = $attributeRetriever;
+        $this->moduleConfig = $moduleConfig;
+    }
+
     /**
      * @param OrderInterface $order
      * @return array
@@ -28,12 +50,10 @@ class OrderDetailViewProvider implements DetailViewProviderInterface
             __('store')->render() => $order->getStore()->getCode(),
             __('orderdate')->render() => (new DateTimeImmutable($order->getCreatedAt()))->format('d-m-Y'),
             __('status')->render() => $order->getStatus(),
-            __('payment method')->render() => $order->getPayment() ? $order->getPayment()->getMethod() : 'Unknown',
-
-
-            // @todo custom attributes
-            //"sherpa_odernummer" => "80320000",
+            __('payment method')->render() => $order->getPayment() ? $order->getPayment()->getMethod() : 'Unknown'
         ];
+
+        $data = array_merge($data, $this->getCustomOrderAttributes($order));
 
         if ($order instanceof Order) {
             /** @var InvoiceInterface $lastInvoice */
@@ -46,5 +66,26 @@ class OrderDetailViewProvider implements DetailViewProviderInterface
         $detailView = new DetailsView(DetailsView::DISPLAY_MODE_ROWS, $data);
         $detailView->setCaption(__('details'));
         return [$detailView];
+    }
+
+    /**
+     * @param OrderInterface $order
+     * @return array
+     */
+    protected function getCustomOrderAttributes(OrderInterface $order): array
+    {
+        $attributeCodes = $this->moduleConfig->getOrderAttributes();
+        if (!$order instanceof Order) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($attributeCodes as $code) {
+            $attributeValue = $this->attributeRetriever->getAttributeValue(Order::ENTITY, $order, $code);
+            if ($attributeValue) {
+                $result[$attributeValue->getLabel()] = $attributeValue->getValue();
+            }
+        }
+        return $result;
     }
 }

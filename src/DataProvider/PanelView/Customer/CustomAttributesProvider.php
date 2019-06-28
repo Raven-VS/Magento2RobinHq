@@ -56,6 +56,7 @@ class CustomAttributesProvider implements PanelViewProviderInterface
         }
 
         $panelData = [];
+        //@todo move to AttributeRetriever. Even met stijn overlegen hoe dit generiek te maken.
         $customerData = $customer->__toArray();
         foreach ($this->moduleConfig->getCustomerAttributes() as $attributeCode) {
             try {

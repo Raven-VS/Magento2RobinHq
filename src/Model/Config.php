@@ -10,7 +10,6 @@ use Magento\Store\Model\ScopeInterface;
  * @author Bram Gerritsen <bgerritsen@emico.nl>
  * @copyright (c) Emico B.V. 2017
  */
-
 class Config implements ConfigInterface
 {
     /**
@@ -32,7 +31,7 @@ class Config implements ConfigInterface
      */
     public function getApiKey(): string
     {
-        return (string) $this->config->getValue('robinhq/api/key', ScopeInterface::SCOPE_STORE);
+        return (string)$this->config->getValue('robinhq/api/key', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -40,7 +39,7 @@ class Config implements ConfigInterface
      */
     public function getApiSecret(): string
     {
-        return (string) $this->config->getValue('robinhq/api/secret', ScopeInterface::SCOPE_STORE);
+        return (string)$this->config->getValue('robinhq/api/secret', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -48,7 +47,7 @@ class Config implements ConfigInterface
      */
     public function getApiUri(): string
     {
-        return (string) $this->config->getValue('robinhq/api/url', ScopeInterface::SCOPE_STORE);
+        return (string)$this->config->getValue('robinhq/api/url', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -56,7 +55,7 @@ class Config implements ConfigInterface
      */
     public function getApiServerKey(): string
     {
-        return (string) $this->config->getValue('robinhq/api/server_key', ScopeInterface::SCOPE_STORE);
+        return (string)$this->config->getValue('robinhq/api/server_key', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -64,7 +63,7 @@ class Config implements ConfigInterface
      */
     public function getApiServerSecret(): string
     {
-        return (string) $this->config->getValue('robinhq/api/server_secret', ScopeInterface::SCOPE_STORE);
+        return (string)$this->config->getValue('robinhq/api/server_secret', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -72,7 +71,7 @@ class Config implements ConfigInterface
      */
     public function isApiEnabled(): bool
     {
-        return (bool) $this->config->getValue('robinhq/api/server_enabled', ScopeInterface::SCOPE_STORE);
+        return (bool)$this->config->getValue('robinhq/api/server_enabled', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -80,7 +79,7 @@ class Config implements ConfigInterface
      */
     public function isPostApiEnabled(): bool
     {
-        return (bool) $this->config->getValue('robinhq/api/post_enabled', ScopeInterface::SCOPE_STORE);
+        return (bool)$this->config->getValue('robinhq/api/post_enabled', ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -88,7 +87,14 @@ class Config implements ConfigInterface
      */
     public function getCustomerAttributes(): array
     {
-        return explode(',', $this->config->getValue('robinhq/custom_attributes/customer_attributes', ScopeInterface::SCOPE_STORE));
+        return array_filter(
+            explode(
+                ',',
+                $this->config->getValue('robinhq/custom_attributes/customer_attributes',
+                    ScopeInterface::SCOPE_STORE
+                )
+            )
+        );
     }
 
     /**
@@ -96,7 +102,14 @@ class Config implements ConfigInterface
      */
     public function getProductAttributes(): array
     {
-        return explode(',', $this->config->getValue('robinhq/custom_attributes/product_attributes', ScopeInterface::SCOPE_STORE));
+        return array_filter(
+            explode(
+                ',',
+                $this->config->getValue('robinhq/custom_attributes/product_attributes',
+                    ScopeInterface::SCOPE_STORE
+                )
+            )
+        );
     }
 
     /**
@@ -104,6 +117,13 @@ class Config implements ConfigInterface
      */
     public function getOrderAttributes(): array
     {
-        return explode(',', $this->config->getValue('robinhq/custom_attributes/order_attributes', ScopeInterface::SCOPE_STORE));
+        return array_filter(
+            explode(
+                ',',
+                $this->config->getValue('robinhq/custom_attributes/order_attributes',
+                    ScopeInterface::SCOPE_STORE
+                )
+            )
+        );
     }
 }

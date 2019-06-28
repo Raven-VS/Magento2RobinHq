@@ -10,15 +10,12 @@ use Emico\RobinHq\Mapper\CustomerFactory;
 use Emico\RobinHq\Mapper\OrderFactory;
 use Emico\RobinHqLib\DataProvider\DataProviderInterface;
 use Emico\RobinHqLib\DataProvider\Exception\DataNotFoundException;
-use Emico\RobinHqLib\DataProvider\Exception\InvalidRequestException;
 use Emico\RobinHqLib\Model\Collection;
 use Emico\RobinHqLib\Model\SearchResult;
 use JsonSerializable;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -42,14 +39,12 @@ class SearchDataProvider implements DataProviderInterface
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
-    /**
-     * @var SortOrderBuilder
-     */
-    private $sortOrderBuilder;
+
     /**
      * @var CustomerRepositoryInterface
      */
     private $customerRepository;
+
     /**
      * @var CustomerFactory
      */
@@ -60,7 +55,6 @@ class SearchDataProvider implements DataProviderInterface
      * @param OrderRepositoryInterface $orderRepository
      * @param CustomerRepositoryInterface $customerRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param SortOrderBuilder $sortOrderBuilder
      * @param CustomerFactory $customerFactory
      * @param OrderFactory $orderFactory
      */
@@ -68,14 +62,12 @@ class SearchDataProvider implements DataProviderInterface
         OrderRepositoryInterface $orderRepository,
         CustomerRepositoryInterface $customerRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        SortOrderBuilder $sortOrderBuilder,
         CustomerFactory $customerFactory,
         OrderFactory $orderFactory
     ) {
         $this->orderRepository = $orderRepository;
         $this->orderFactory = $orderFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->sortOrderBuilder = $sortOrderBuilder;
         $this->customerRepository = $customerRepository;
         $this->customerFactory = $customerFactory;
     }
@@ -117,8 +109,6 @@ class SearchDataProvider implements DataProviderInterface
             ->setValue($searchTerm . '%')
             ->setConditionType('like');
 
-        //@todo add name filter
-
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilters([$emailFilter, $telephoneFilter])
             ->setPageSize(10)
@@ -139,6 +129,7 @@ class SearchDataProvider implements DataProviderInterface
      * @param string $searchTerm
      * @return Collection
      * @throws LocalizedException
+     * @throws \Exception
      */
     protected function getOrders(string $searchTerm): Collection
     {

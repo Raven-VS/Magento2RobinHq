@@ -7,6 +7,7 @@
 namespace Emico\RobinHq\DataProvider\DetailView;
 
 
+use Emico\RobinHq\DataProvider\EavAttribute\AttributeRetriever;
 use Emico\RobinHq\Model\Config;
 use Emico\RobinHqLib\Model\Order\DetailsView;
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -57,6 +58,10 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var AttributeRetriever
+     */
+    private $attributeRetriever;
 
     /**
      * ProductDetailViewProvider constructor.
@@ -65,6 +70,7 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param EavConfig $eavConfig
      * @param Config $moduleConfig
+     * @param AttributeRetriever $attributeRetriever
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -73,6 +79,7 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
         SearchCriteriaBuilder $searchCriteriaBuilder,
         EavConfig $eavConfig,
         Config $moduleConfig,
+        AttributeRetriever $attributeRetriever,
         LoggerInterface $logger
     ) {
         $this->priceCurrency = $priceCurrency;
@@ -81,6 +88,7 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->eavConfig = $eavConfig;
         $this->logger = $logger;
+        $this->attributeRetriever = $attributeRetriever;
     }
 
     /**
@@ -155,14 +163,10 @@ class ProductDetailViewProvider implements DetailViewProviderInterface
 
         $result = [];
         foreach ($attributeCodes as $code) {
-            try {
-                $attributeConfig = $this->eavConfig->getAttribute(Product::ENTITY, $code);
-            } catch (LocalizedException $e) {
-                $this->logger->error($e->getMessage());
-                continue;
+            $attributeValue = $this->attributeRetriever->getAttributeValue(Product::ENTITY, $product, $code);
+            if ($attributeValue) {
+                $result[$attributeValue->getLabel()] = $attributeValue->getValue();
             }
-
-            $result[$attributeConfig->getDefaultFrontendLabel()] = $product->getAttributeText($code);
         }
         return $result;
     }

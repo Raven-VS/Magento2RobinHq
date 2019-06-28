@@ -58,12 +58,14 @@ class CustomerFactory
     /**
      * @param CustomerInterface $customer
      * @return Customer
-     * @throws \Exception
      */
     public function createRobinCustomer(CustomerInterface $customer): Customer
     {
         $robinCustomer = new Customer($customer->getEmail());
-        $robinCustomer->setCustomerSince(new DateTimeImmutable($customer->getCreatedAt()));
+        try {
+            $robinCustomer->setCustomerSince(new DateTimeImmutable($customer->getCreatedAt()));
+        } catch (\Exception $e) {
+        }
         $robinCustomer->setName($this->getFullName($customer));
 
         foreach ($this->panelViewProvider->getData($customer) as $label => $value) {
